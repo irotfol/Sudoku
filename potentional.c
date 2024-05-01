@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-int clear_potentional_digits(short grid[9][9], bool potent_digit[9][9][9]) {
+bool clear_potentional_digits(short grid[9][9], bool potent_digit[9][9][9]) {
     short i = 0;
     short j = 0;
     short k = 0;
@@ -22,7 +22,7 @@ int clear_potentional_digits(short grid[9][9], bool potent_digit[9][9][9]) {
     return 0;
 }
 
-int potentional_digits_subgrid_second(short grid[9][9], short sub_x, short sub_y, bool potent_digit[9][9][9]) {
+bool potentional_digits_subgrid_second(short grid[9][9], short sub_x, short sub_y, bool potent_digit[9][9][9]) {
     short i = 0;
     short j = 0;
     short k = 0;
@@ -54,7 +54,7 @@ int potentional_digits_subgrid_second(short grid[9][9], short sub_x, short sub_y
     return 0;
 }
 
-int potentional_digits_subgrid(short grid[9][9], short y, short x, bool potent_digit[9][9][9]) {
+bool potentional_digits_subgrid(short grid[9][9], short y, short x, bool potent_digit[9][9][9]) {
     short i = 0;
     short j = 0;
     short k = 0;
@@ -76,7 +76,7 @@ int potentional_digits_subgrid(short grid[9][9], short y, short x, bool potent_d
     return 0;
 }
 
-int potentional_digits_collumn_second(short grid[9][9], short column, bool potent_digit[9][9][9]) {
+bool potentional_digits_collumn_second(short grid[9][9], short column, bool potent_digit[9][9][9]) {
     short i = 0;
     short y = 0;
     short k = 0;
@@ -100,7 +100,7 @@ int potentional_digits_collumn_second(short grid[9][9], short column, bool poten
     return 0;
 }
 
-int potentional_digits_collumn(short grid[9][9], short y, short x, bool potent_digit[9][9][9]) {
+bool potentional_digits_collumn(short grid[9][9], short y, short x, bool potent_digit[9][9][9]) {
     short i = 0;
     short k = 0;
     for (i = 0; i < 9; i++) {
@@ -114,7 +114,7 @@ int potentional_digits_collumn(short grid[9][9], short y, short x, bool potent_d
     return 0;
 }
 
-int potentional_digits_row_second(short grid[9][9], short row, bool potent_digit[9][9][9]) {
+bool potentional_digits_row_second(short grid[9][9], short row, bool potent_digit[9][9][9]) {
     short x = 0;
     short j = 0;
     short k = 0;
@@ -138,7 +138,7 @@ int potentional_digits_row_second(short grid[9][9], short row, bool potent_digit
     return 0;
 }
 
-int potentional_digits_row(short grid[9][9], short y, short x, bool potent_digit[9][9][9]) {
+bool potentional_digits_row(short grid[9][9], short y, short x, bool potent_digit[9][9][9]) {
     short j = 0;
     short k = 0;
     for (j = 0; j < 9; j++) {
@@ -152,14 +152,14 @@ int potentional_digits_row(short grid[9][9], short y, short x, bool potent_digit
     return 0;
 }
 
-int potentional_digits(short grid[9][9], short y, short x, bool potent_digit[9][9][9]) {
+bool potentional_digits(short grid[9][9], short y, short x, bool potent_digit[9][9][9]) {
     potentional_digits_row(grid, y, x, potent_digit);
     potentional_digits_collumn(grid, y, x, potent_digit);
     potentional_digits_subgrid(grid, y, x, potent_digit);
     return 0;
 }
 
-int potentional_digits_all(short grid[9][9], bool potent_digit[9][9][9]) {
+bool potentional_digits_all(short grid[9][9], bool potent_digit[9][9][9]) {
     short i = 0;
     short j = 0;
     for (i = 0; i < 9; i++) {
@@ -180,7 +180,7 @@ int potentional_digits_all(short grid[9][9], bool potent_digit[9][9][9]) {
     }
     return 0;
 }
-bool potentional_digits_insert(short grid[9][9], bool potent_digit[9][9][9]) {
+bool potentional_digits_insert(short *grid, bool potent_digit[9][9][9]) {
     short i = 0;
     short j = 0;
     short k = 0;
@@ -200,9 +200,10 @@ bool potentional_digits_insert(short grid[9][9], bool potent_digit[9][9][9]) {
                 }
             }
             if (amount == 1) {
-                grid[i][j] = inser;
+                *grid = inser;
                 fl = false;
             }
+            grid++;
         }
     }
     return fl;
