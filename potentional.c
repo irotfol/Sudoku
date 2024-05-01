@@ -1,23 +1,21 @@
 #include <stdbool.h>
 
-bool clear_potentional_digits(short grid[9][9], bool potent_digit[9][9][9]) {
+bool clear_potentional_digits(short *grid, bool *potent_digit) {
     short i = 0;
-    short j = 0;
     short k = 0;
-    for (i = 0; i < 9; i++) {
-        j = 0;
-        for (j = 0; j < 9; j++) {
-            k = 0;
-            for (k = 0; k < 9; k++) {
-                if (grid[i][j] == 0) {
-                    potent_digit[i][j][k] = true;
-                }
-                else
-                {
-                    potent_digit[i][j][k] = false;
-                }
+    for (i = 0; i < 81; i++) {
+        k = 0;
+        for (k = 0; k < 9; k++) {
+            if (*grid == 0) {
+                *potent_digit = true;
             }
+            else
+            {
+                *potent_digit = false;
+            }
+            potent_digit++;
         }
+        grid++;
     }
     return 0;
 }
@@ -180,31 +178,28 @@ bool potentional_digits_all(short grid[9][9], bool potent_digit[9][9][9]) {
     }
     return 0;
 }
-bool potentional_digits_insert(short *grid, bool potent_digit[9][9][9]) {
+bool potentional_digits_insert(short *grid, bool *potent_digit) {
     short i = 0;
-    short j = 0;
     short k = 0;
     short inser = 0;
     short amount = 0;
     bool fl = true;
-    for (i = 0; i < 9; i++) {
-        j = 0;
-        for (j = 0; j < 9; j++) {
-            amount = 0;
-            for (k = 0; k < 9; k++) {
-                if (potent_digit[i][j][k] == true) {
-                    amount++;
-                    if (amount == 1) {
-                        inser = k + 1;
-                    }
+    for (i = 0; i < 81; i++) {
+        amount = 0;
+        for (k = 0; k < 9; k++) {
+            if (*potent_digit == true) {
+                amount++;
+                if (amount == 1) {
+                    inser = k + 1;
                 }
             }
-            if (amount == 1) {
-                *grid = inser;
-                fl = false;
-            }
-            grid++;
+            *potent_digit++;
         }
+        if (amount == 1) {
+            *grid = inser;
+            fl = false;
+        }
+        grid++;
     }
     return fl;
 }

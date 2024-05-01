@@ -9,12 +9,12 @@
 bool print_table(Vector2* mouse_pos, short *grid) {
     short pos_x = 0;
     short pos_y = 0;
+    short i = 0;
+    short j = 0;
     static short rect_size = 55;
     const short con_x = (rect_size / 2);
     static short betw_cells_thickness = 5;
     static short betw_subg_thickness = 3;
-    short i = 0;
-    short j = 0;
     KeyboardKey key = 0;
     Color rect_color = RAYWHITE;
     char *digit = malloc(2 * sizeof(char));
@@ -134,7 +134,7 @@ bool main(void) {
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0}*/ };
     InitWindow(600, 600, "Sudoku");
-    SetTargetFPS(15);
+    SetTargetFPS(60);
     while (!WindowShouldClose()) {
         Maus.x = 0;
         Maus.y = 0;
@@ -157,9 +157,9 @@ bool main(void) {
                 paused = !paused;
         }
         if (!paused) {
-            clear_potentional_digits(sudoku_game, potentional_digit);
+            clear_potentional_digits(&sudoku_game, &potentional_digit);
             potentional_digits_all(sudoku_game, potentional_digit);
-            flag = potentional_digits_insert(&sudoku_game, potentional_digit);
+            flag = potentional_digits_insert(&sudoku_game, &potentional_digit);
             fin = finish(&sudoku_game, &flag);       
             paused = true;
         }
