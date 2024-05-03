@@ -4,7 +4,9 @@
 #include <math.h>
 #include <stdlib.h>
 #include <raylib.h>
+#include <ctype.h>
 #include "potentional.h"
+
 
 bool print_table(Vector2* mouse_pos, short *grid) {
     short pos_x = 0;
@@ -105,26 +107,113 @@ short finish(short *grid, bool* fl) {
     return 2;
 }
 
+bool savefile(char let, short table[9][9]) {
+    FILE* fp;
+    char fname[6] = { let, '\0' };
+    strcat(fname, ".txt");
+    unsigned short i = 0;
+    unsigned short j = 0;
+    char symbol[2] = { '\0' };
+    fp = fopen(fname, "wb");
+    if (!fp) {
+        fprintf(stderr, "Error: Unable to open the output file!\n");
+        return EXIT_FAILURE;
+    }
+    for (i = 0; i < 9; i++) {
+        j = 0;
+        for (j = 0; j < 9; j++) {
+            if (table[i][j] != 0) {
+                sprintf(symbol, "%d", table[i][j]);
+            }
+            else
+            {
+                symbol[0] = ' ';
+            }
+            fputs(symbol, fp);
+        }
+        fputs("\0", fp);
+        fputs("\n", fp);
+    }
+    fclose(fp);
+    return 0;
+}
+
+bool loadfile(char let, short table[9][9]) {
+    FILE* fp;
+    char fname[6] = { let, '\0' };
+    strcat(fname, ".txt");
+    unsigned short i = 0;
+    unsigned short j = 0;
+    int digit = 0;
+    char str[11] = {'\0'};
+    fp = fopen(fname, "r");
+    if (!fp) {
+        fprintf(stderr, "Error: Unable to open the output file!\n");
+        return EXIT_FAILURE;
+    }
+    for (i = 0; i < 9; i++) {
+        j = 0;
+        fgets(str, 11, fp);
+        for (j = 0; j < 9; j++) {
+            if ((str[j] != '\n') && (str[j] != '\0')) {
+                if (str[j] != ' ') {
+                    digit = (int)(str[j]) - 48;
+                    table[i][j] = digit;
+                }
+                else
+                {
+                    table[i][j] = 0;
+                }
+            }
+        }
+    }
+    fclose(fp);
+    return 0;
+}
+
+bool colis(Rectangle rect, Vector2 mouse_pos) {
+    if ((mouse_pos.x >= rect.x) && (mouse_pos.y >= rect.y) && (mouse_pos.x <= (rect.x + rect.width)) && (mouse_pos.y <= (rect.y + rect.height))) {
+        DrawRectangleRec(rect, BLUE);
+        return true;
+    }
+    else {
+        DrawRectangleRec(rect, RAYWHITE);
+        return false;
+    }
+
+}
 
 bool main(void) {
     bool potentional_digit[9][9][9];
     bool flag = false;
     bool paused = true;
+
+    Rectangle load_button;
+    load_button.x = 5;
+    load_button.y = 25;
+    load_button.width = 40;
+    load_button.height = 20;
+
+    Rectangle save_button;
+    save_button.x = 50;
+    save_button.y = 25;
+    save_button.width = 40;
+    save_button.height = 20;
+
+    Rectangle file_name;
+    file_name.x = 95;
+    file_name.y = 5;
+    file_name.width = 40;
+    file_name.height = 40;
+
     short fin = 0;
+    short key = 0;
+    char letter[2] = { 's','\0' };
     Vector2 Maus = GetMousePosition();
     Maus.x = 0;
     Maus.y = 0;
     short sudoku_game[9][9] =
-    {       {0, 8, 0, 0, 0, 0, 0, 9, 0},
-            {0, 7, 0, 0, 6, 0, 2, 1, 0},
-            {0, 0, 6, 0, 4, 8, 7, 0, 0},
-            {8, 0, 0, 0, 0, 0, 5, 3, 0},
-            {0, 2, 0, 0, 0, 0, 0, 0, 0},
-            {1, 6, 3, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 4, 0, 1, 9, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 7, 0},
-            {2, 0, 9, 7, 0, 0, 0, 0, 5}
-        /*{0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {       {0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -132,7 +221,7 @@ bool main(void) {
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0}*/ };
+            {0, 0, 0, 0, 0, 0, 0, 0, 0} };
     InitWindow(600, 600, "Sudoku");
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
@@ -152,7 +241,28 @@ bool main(void) {
                 Maus = GetMousePosition();
             }
         }
+        DrawText("Load", 10, 5, 15, RAYWHITE);
+        if (colis(load_button, Maus)) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                loadfile(letter[0], sudoku_game);
+            }
+        }
+        DrawText("Save", 50, 5, 15, RAYWHITE);
+        if (colis(save_button, Maus)) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                savefile(letter[0], sudoku_game);
+            }
+        }
+        if (colis(file_name, Maus)) {
+            key = GetKeyPressed();
+            if ((key >= 32) && (key <= 125))
+            {
+                letter[0] = tolower((char)key);
+            }
+        }
+        DrawText(letter, 105, 5, 35, BLACK);
         print_table(&Maus, &sudoku_game);
+        EndDrawing();
         if ((IsKeyPressed(KEY_ENTER)) && ((fin == 0))){
                 paused = !paused;
         }
@@ -163,7 +273,6 @@ bool main(void) {
             fin = finish(&sudoku_game, &flag);       
             paused = true;
         }
-        EndDrawing();
     }
     CloseWindow();
 
